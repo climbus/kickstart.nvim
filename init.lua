@@ -570,7 +570,21 @@ require('lazy').setup({
       local servers = {
         clangd = {},
         -- gopls = {},
-        pyright = { settings = { python = { analysis = { typeCheckingMode = 'strict' } } } },
+        -- pyright = { settings = { python = { analysis = { typeCheckingMode = 'strict' } } } },
+        pylsp = {
+          settings = {
+            pylsp = {
+              plugins = {
+                pycodestyle = { enabled = false },
+                flake8 = { enabled = true, maxLineLength = 120, ignore = { 'E501', 'W503', 'E203', 'E701', 'E704' } },
+                pylint = { enabled = false },
+                mccabe = { enabled = false },
+                yapf = { enabled = true },
+                -- black = { enabled = true },
+              },
+            },
+          },
+        },
         rust_analyzer = {},
         sqlls = {},
         html = {},
@@ -583,16 +597,16 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         ts_ls = {},
         --
-        snyk_ls = {
-          init_options = {
-            endpoint = 'https://api.eu.snyk.io',
-            -- authenticationMethod = 'oauth',
-            activateSnykCode = 'true',
-            token = 'a66ac8ea-a7a4-43f9-9cd6-57a994949d64',
-            insecure = 'true',
-            -- automaticAuthentication = true,
-          },
-        },
+        -- snyk_ls = {
+        --   init_options = {
+        --     endpoint = 'https://api.eu.snyk.io',
+        --     -- authenticationMethod = 'oauth',
+        --     activateSnykCode = 'true',
+        --     token = 'a66ac8ea-a7a4-43f9-9cd6-57a994949d64',
+        --     insecure = 'true',
+        --     -- automaticAuthentication = true,
+        --   },
+        -- },
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -901,17 +915,13 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-<<<<<<< Updated upstream
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  { import = 'custom.plugins' },
-=======
   { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
->>>>>>> Stashed changes
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
