@@ -586,6 +586,35 @@ require('lazy').setup({
         end,
       })
 
+      -- Diagnostic Config
+      -- See :help vim.diagnostic.Opts
+      vim.diagnostic.config {
+        severity_sort = true,
+        float = { border = 'rounded', source = 'if_many' },
+        underline = { severity = vim.diagnostic.severity.ERROR },
+        signs = vim.g.have_nerd_font and {
+          text = {
+            [vim.diagnostic.severity.ERROR] = '󰅚 ',
+            [vim.diagnostic.severity.WARN] = '󰀪 ',
+            [vim.diagnostic.severity.INFO] = '󰋽 ',
+            [vim.diagnostic.severity.HINT] = '󰌶 ',
+          },
+        } or {},
+        virtual_text = {
+          source = true,
+          spacing = 2,
+          format = function(diagnostic)
+            local diagnostic_message = {
+              [vim.diagnostic.severity.ERROR] = diagnostic.message,
+              [vim.diagnostic.severity.WARN] = diagnostic.message,
+              [vim.diagnostic.severity.INFO] = diagnostic.message,
+              [vim.diagnostic.severity.HINT] = diagnostic.message,
+            }
+            return diagnostic_message[diagnostic.severity]
+          end,
+        },
+      }
+
       -- LSP servers and clients are able to communicate to each other what features they support.
       --  By default, Neovim doesn't support everything that is in the LSP specification.
       --  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
@@ -597,26 +626,35 @@ require('lazy').setup({
       --  See `:help lsp-config` for information about keys and how to configure
       local servers = {
         clangd = {},
-        -- gopls = {},
-        -- pyright = { settings = { python = { analysis = { typeCheckingMode = 'strict' } } } },
+        gopls = {},
+        pyright = { settings = { python = { analysis = { typeCheckingMode = 'strict' } } } },
         pylsp = {
-          settings = {
-            pylsp = {
-              plugins = {
-                pycodestyle = { enabled = false },
-                flake8 = { enabled = true, maxLineLength = 120, ignore = { 'E501', 'W503', 'E203', 'E701', 'E704' } },
-                pylint = { enabled = false },
-                mccabe = { enabled = false },
-                yapf = { enabled = true },
-                -- black = { enabled = true },
-              },
+          pylsp = {
+            format_enabled = false,
+            plugins = {
+              pycodestyle = { enabled = true, maxLineLength = 400 },
+              -- flake8 = { enabled = true, maxLineLength = 120, ignore = { 'E501', 'W503', 'E203', 'E701', 'E704' } },
+              pylsp_pylint = { enabled = false },
+              mccabe = { enabled = false },
+              yapf = { enabled = true },
+              pyflakes = { enabled = false },
+              rope_autoimport = { enabled = true },
+              -- black = { enabled = true },
+              pylsp_mypy = { enabled = true, strict = true, mypy_command = { 'python', '-m', 'mypy' } },
             },
           },
+          -- aaa = 'bbb',
+          -- cmd = { 'uv', 'run', '--with', 'python-lsp-server,pylsp-mypy,pylsp-rope', 'pylsp' },
+          -- settings = {
+          --   },
         },
+        -- ruff = {},
         rust_analyzer = {},
         sqlls = {},
         html = {},
-        emmet_ls = {},
+        emmet_ls = {
+          filetypes = { 'html' },
+        },
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -651,6 +689,7 @@ require('lazy').setup({
             },
           },
         },
+        jsonls = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -735,14 +774,11 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        python = { 'isort', 'black' },
+        python = { 'ruff_format' },
         html = { 'djlint' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        javascript = { 'prettier' },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
         sql = { 'sqlfluff' },
       },
     },
@@ -966,3 +1002,7 @@ require('lazy').setup({
 vim.g.python3_host_prog = '~/srodowiska/nvim/bin/python'
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+vim.o.tabstop = 4 -- A TAB character looks like 4 spaces
+vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
+vim.o.softtabstop = 4 -- Number of spaces inserted instead of a TAB character
+vim.o.shiftwidth = 4 -- Number of spaces inserted when indenting

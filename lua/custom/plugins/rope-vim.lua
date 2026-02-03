@@ -1,5 +1,5 @@
 return {
-  'python-rope/ropevim',
-  ft = 'python',
-  lazy = false,
+  -- 'python-rope/ropevim',
+  -- ft = 'python',
+  -- lazy = false,
 }
